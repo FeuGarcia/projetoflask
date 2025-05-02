@@ -1,0 +1,113 @@
+from flask import Flask
+import folium
+
+app = Flask(__name__)
+
+locais = {
+        "Acude": [-22.496805, -44.139830],
+        "Acude 2": [-22.494688, -44.135350],
+        "Acude 3": [-22.503992, -44.138072],
+        "Aero clube": [-22.503113, -44.081076],
+        "Agua limpa": [-22.507950, -44.068231],
+        "Aterrado": [-22.507802, -44.094060],
+        "Barreira cravo": [-22.494617, -44.086202],
+        "Bela vista": [-22.524261, -44.109158],
+        "Belmonte": [-22.510170, -44.134735],
+        "Belo horizonte": [-22.490610, -44.121331],
+        "Bom jesus": [-22.495095, -44.106850],
+        "Brasilandia": [-22.482872, -44.061448],
+        "Caieira": [-22.479854, -44.058105],
+        "Cailandia": [-22.481532, -44.059798],
+        "Candelaria": [-22.471693, -44.075729],
+        "Casa de pedra": [-22.539327, -44.078451],
+        "Centro": [-22.512789, -44.091216],
+        "Colorado": [-22.494435, -44.041321],
+        "Conforto": [-22.522814, -44.123209],
+        "Coqueiros": [-22.491720, -44.108243],
+        "Dom bosco": [-22.475690, -44.059073],
+        "Duzentos e quarenta e nove": [-22.529989, -44.127392],
+        "Eldorado": [-22.493226, -44.103987],
+        "Eucaliptal": [-22.525966, -44.120233],
+        "Fazendinha": [-22.486929, -44.105845],
+        "Ilha parque": [-22.487173, -44.086668],
+        "Ilha sao joao": [-22.489794, -44.089530],
+        "Jardim amalia": [-22.510241, -44.081521],
+        "Jardim belvedere": [--22.532705, -44.070768],
+        "Jardim cidade do aco": [-22.504235, -44.120962],
+        "Jardim esperanca": [-22.532717, -44.087594],
+        "Jardim europa": [-22.528293, -44.130533],
+        "Jardim normandia": [-22.513489, -44.083039],
+        "Jardim padre josimo tavares": [-22.515264, -44.146800],
+        "Jardim paraiba": [-22.509976, -44.097975],
+        "Jardim ponte alta": [-22.534220, -44.129250],
+        "Jardim primavera": [-22.497349, -44.096405],
+        "Jardim suica": [-22.535033, -44.136541],
+        "Jardim vila rica - tiradentes": [-22.544776, -44.067288],
+        "Laranjal": [-22.519329, -44.098299],
+        "Limoeiro": [-22.495528, -44.099863],
+        "Mariana torres": [-22.490147, -44.107165],
+        "Minerlandia": [-22.534310, -44.123376],
+        "Mirante do vale": [-22.491806, -44.097213],
+        "Monte castelo": [-22.520953, -44.091142],
+        "Morada da colina": [-22.512885, -44.072462],
+        "Morro da conquista": [-22.492410, -44.071071],
+        "Morro sao carlos": [-22.530472, -44.124995],
+        "Niteroi": [-22.498770, -44.091970],
+        "Nossa senhora das gracas": [-22.503169, -44.094865],
+        "Nova esperanca": [-22.488264, -44.120369],
+        "Nova primavera": [-22.486664, -44.054965],
+        "Parque das ilhas": [-22.490032, -44.084736],
+        "Ponte alta": [-22.528708, -44.135227],
+        "Retiro": [-22.500317, -44.124394],
+        "Rio das flores": [-22.590325, -44.074973],
+        "Roma": [-22.599528, -44.078390],
+        "Roma 2": [-22.606659, -44.080446],
+        "Rustico": [-22.522622, -44.112855],
+        "San remo": [-22.495156, -44.084335],
+        "Santa cruz": [-22.464588, -44.096144],
+        "Santa cruz 2": [-22.464622, -44.101245],
+        "Santa ines": [-22.532576, -44.115421],
+        "Santa rita do zarur": [-22.465892, -44.110494],
+        "Santa tereza": [-22.523453, -44.112855],
+        "Santo agostinho": [-22.487394, -44.077056],
+        "Sao cristovao": [-22.533353, -44.118602],
+        "Sao geraldo": [-22.516800, -44.086030],
+        "Sao joao": [-22.516180, -44.091420],
+        "Sao joao batista": [-22.485664, -44.098887],
+        "Sao lucas": [-22.529968, -44.120030],
+        "Sao luis": [-22.475577, -44.065528],
+        "Sao sebastiao": [-22.464315, -44.061808],
+        "Sessenta": [-22.524360, -44.095648],
+        "Siderlandia": [-22.521308, -44.139994],
+        "Sideropolis": [-22.538078, -44.086678],
+        "Tres pocos": [-22.496374, -44.041063],
+        "Vale verde": [-22.492561, -44.113637],
+        "Vila americana": [-22.499579, -44.074654],
+        "Vila brasilia": [-22.489664, -44.115061],
+        "Vila mury": [-22.499163, -44.103313],
+        "Vila santa cecilia": [-22.521873, -44.103138],
+        "Vilage sul": [-22.534948, -44.072089],
+        "Voldac": [-22.491864, -44.092963],
+        "Volta grande": [-22.485655, -44.077675],
+        "Volta grande 2": [-22.486535, -44.071940]
+    }
+    
+@app.route("/teste")
+def base():
+    map = folium.Map(
+        location=[-22.522814, -44.123209], #mapa inicial
+        zoom_start=15
+    )
+
+    for nome, coord in locais.items():
+        folium.Marker(
+            location=coord,
+            popup=f"<b>{nome}</b>Lat: {coord[0]:.6f}<br>Lon: {coord[1]:.6f}",
+            tooltip=nome,
+            icon=folium.Icon(icon="5", color="red", prefix='1')
+        ).add_to(map)
+
+    return map._repr_html_()
+
+if __name__ == "__main__":
+    app.run(debug=True)
